@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:x_change/views/Avaliacao.dart';
 import 'package:x_change/views/Buscar.dart';
+import 'package:x_change/views/MenuLateral.dart';
 import 'package:x_change/views/MeusAnuncios.dart';
 import 'package:x_change/views/PedidosTrocas.dart';
 import 'package:x_change/views/Perfil.dart';
@@ -16,11 +17,6 @@ class Anuncios extends StatefulWidget {
 
 class _AnunciosState extends State<Anuncios> {
 
-  List<String> itensMenu = [];
-
-  _escolhaMenuItem(String itemEscolhido){
-
-  }
 
   Future _verificarUsuarioLogado() async {
 
@@ -34,15 +30,6 @@ class _AnunciosState extends State<Anuncios> {
     }
   }
 
-  _deslogarUsuario() async {
-
-    Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
-    await auth.signOut();
-
-    Navigator.pushNamed(context, "/login");
-  }
-
-  
   String _emailUsuario = "";
   Future _recuperarEmail() async {
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
@@ -53,54 +40,6 @@ class _AnunciosState extends State<Anuncios> {
     });
   }
 
-  void avaliar(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Avaliacao()));
-  }
-
-  void editarPerfil(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Perfil()));
-  }
-
-  void meusAnuncios(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MeusAnuncios()));
-  }
-
-  void trocar(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PedidosTrocas()));
-  }
-
-  void editarPlanos(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Planos()));
-  }
-
-  void buscar(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Buscar()));
-  }
-
-  void sobre(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Sobre()));
-  }
 
 
   @override
@@ -115,10 +54,28 @@ class _AnunciosState extends State<Anuncios> {
     return Scaffold(
       appBar: AppBar(
         title: Text("X-Change"),
+        centerTitle: true,
       ),
-      drawer: Drawer(
+      drawer: MenuLateral(),
+      body: Center(
+        child: Text(_emailUsuario),
+      ),
+    );
+  }
+}
+
+/* Drawer(
           child:ListView(
             children: [
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text("Home"),
+                subtitle:Text("Pagina Inicial"),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: (){
+                  editarPerfil();
+                },
+              ),
               ListTile(
                 leading: Icon(Icons.person),
                 title: Text("Perfil"),
@@ -184,11 +141,4 @@ class _AnunciosState extends State<Anuncios> {
               ),
             ],
           )
-      ),
-      body: Center(
-        child: Text(_emailUsuario),
-      ),
-    );
-  }
-}
-
+      ) */

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:x_change/views/MenuLateral.dart';
 
 class MeusAnuncios extends StatefulWidget {
   @override
@@ -11,7 +12,9 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Meus Anúncios"),
+        centerTitle: true,
       ),
+      drawer: MenuLateral(),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
@@ -19,7 +22,7 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
           Navigator.pushNamed(context, "/novo-anuncio");
         },
       ),
-      body: Container(),
+      body: Center(),
     );
   }
 }

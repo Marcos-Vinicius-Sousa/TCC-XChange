@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart'as Auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:x_change/views/widgets/BotaoCustomizado.dart';
 import 'Cadastro.dart';
 import 'views/Anuncios.dart';
 import 'model/Usuario.dart';
-import 'views/Inputcustomizado.dart';
+import 'views/widgets/Inputcustomizado.dart';
 
 
 class Login extends StatefulWidget {
@@ -124,6 +125,17 @@ class _LoginState extends State<Login> {
                     obscure: true,
                   ),
                   Padding(
+                      padding: EdgeInsets.only(top: 16, bottom: 10),
+                      child:BotaoCustomizado(
+                        texto: "Entrar",
+                        onPressed: (){
+                          _validarCampos();
+                        },
+
+                      ),
+                  ),
+
+                  /*Padding(
                     padding: EdgeInsets.only(top: 16, bottom: 10),
                     child: RaisedButton(
                       child: Text(
@@ -140,7 +152,7 @@ class _LoginState extends State<Login> {
                         _validarCampos();
                       },
                     ),
-                  ),
+                  ),*/
                   Center(
                     child: GestureDetector(
                       child: Text(
