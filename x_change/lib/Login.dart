@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:x_change/views/widgets/BotaoCustomizado.dart';
+import 'package:x_change/views/widgets/InputcustomizadoSenha.dart';
 import 'Cadastro.dart';
 import 'views/Anuncios.dart';
 import 'model/Usuario.dart';
@@ -119,7 +120,7 @@ class _LoginState extends State<Login> {
                     ),
 
                   ),
-                  Inputcustomizado(
+                  InputcustomizadoSenha(
                     controller: _controllerSenha,
                     hint: "Senha",
                     obscure: true,

@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  brasil_fields:
+    dependency: "direct main"
+    description:
+      name: brasil_fields
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
   characters:
     dependency: transitive
     description:
@@ -287,6 +294,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  validadores:
+    dependency: "direct main"
+    description:
+      name: validadores
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   vector_math:
     dependency: transitive
     description:

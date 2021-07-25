@@ -1,11 +1,15 @@
 
 import 'dart:io';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:validadores/Validador.dart';
 import 'package:x_change/views/MenuLateral.dart';
 import 'package:x_change/views/widgets/BotaoCustomizado.dart';
+import 'package:x_change/views/widgets/Inputcustomizado.dart';
 
 class NovoAnuncio extends StatefulWidget {
   @override
@@ -15,6 +19,10 @@ class NovoAnuncio extends StatefulWidget {
 class _NovoAnuncioState extends State<NovoAnuncio> {
 
   final _formKey = GlobalKey<FormState>();
+  List<File> _listaImagens = List();
+  List<DropdownMenuItem<String>> _listaItensCidades = List();
+  List<DropdownMenuItem<String>> _listaItensCategorias = List();
+
 
   _selecionarImagemGaleria() async {
 
@@ -27,7 +35,52 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     }
   }
 
-  List<File> _listaImagens = List();
+  @override
+  void initState() {
+
+    super.initState();
+    _carregarItensDropdown();
+  }
+
+  _carregarItensDropdown(){
+
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Automóvel"), value: "auto",)
+    );
+
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Imóvel"), value: "imóvel",)
+    );
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Eletronicos"), value: "eletro",)
+    );
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Moda"), value: "moda",)
+    );
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Serviços"), value: "serviço",)
+    );
+    _listaItensCategorias.add(
+        DropdownMenuItem(child: Text("Esportes"), value: "esportes",)
+    );
+    
+    _listaItensCidades.add(
+        DropdownMenuItem(child: Text("São Vicente"), value: "São Vicente",)
+    );
+    _listaItensCidades.add(
+        DropdownMenuItem(child: Text("Santos"), value: "Santos",)
+    );
+    _listaItensCidades.add(
+        DropdownMenuItem(child: Text("Guaruja"), value: "Guaruja",)
+    );
+    _listaItensCidades.add(
+        DropdownMenuItem(child: Text("Praia Grande"), value: "Praia Grande",)
+    );
+    _listaItensCidades.add(
+        DropdownMenuItem(child: Text("Cubatão"), value: "Cubatão",)
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,11 +202,100 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                 ),
                 // Menus Dropdown
                 Row(children: <Widget>[
-                  Text("Cidade"),
-                  Text("Categoria")
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: DropdownButtonFormField(
+                        hint: Text("Cidades"),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20
+                        ),
+                        items: _listaItensCidades,
+                        validator: (valor){
+                          return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                              .valido(valor);
+                        },
+                        onChanged: (valor){
+                          print("valor drop: ${valor}");
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: DropdownButtonFormField(
+                        hint: Text("Categoria"),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20
+                        ),
+                        items: _listaItensCategorias,
+                        validator: (valor){
+                          return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                              .valido(valor);
+                        },
+                        onChanged: (valor){
+                          print("valor drop: ${valor}");
+                        },
+                      ),
+                    ),
+                  ),
                 ],),
                 //Caixas de Textos e Botoes
-                Text("Caixas de textos"),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15, top: 15),
+                  child: Inputcustomizado(
+                    hint: "Título",
+                    validator: (valor){
+                      return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                          .valido(valor);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Inputcustomizado(
+                    hint: "Preço",
+                    type: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      RealInputFormatter(centavos: true)
+                    ],
+                    validator: (valor){
+                      return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                          .valido(valor);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Inputcustomizado(
+                    hint: "Telefone",
+                    type: TextInputType.phone,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter()
+                    ],
+                    validator: (valor){
+                      return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                          .valido(valor);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Inputcustomizado(
+                    hint: "Descrição (300 caracteres)",
+                    maxLines: null,
+                    validator: (valor){
+                      return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
+                      .maxLength(500,msg: "Máximo de 300 caracteres")
+                          .valido(valor);
+                    },
+                  ),
+                ),
                 BotaoCustomizado(
                   texto: "Cadastrar Anúncio",
                   onPressed: (){

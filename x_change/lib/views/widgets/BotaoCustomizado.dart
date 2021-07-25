@@ -23,7 +23,7 @@ class BotaoCustomizado extends StatelessWidget {
       color: Colors.deepOrange,
       padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32)
+          borderRadius: BorderRadius.circular(10)
       ),
       onPressed: this.onPressed
     );

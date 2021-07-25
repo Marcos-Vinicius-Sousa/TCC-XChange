@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-class Inputcustomizado extends StatelessWidget {
+class InputcustomizadoSenha extends StatelessWidget {
 
   final TextEditingController controller;
   final String hint;
-  //final bool obscure;
+  final bool obscure;
   final bool autofocus;
   final TextInputType type;
-  final int maxLines;
+
   final List<TextInputFormatter> inputFormatters;
   final Function(String) validator;
 
-  Inputcustomizado({
+  InputcustomizadoSenha({
     @required this.controller,
     @required this.hint,
-    //this.obscure = false,
+    this.obscure = false,
     this.autofocus = false,
     this.type = TextInputType.text,
     this.inputFormatters,
-    this.maxLines,
     this.validator
 
   });
@@ -28,13 +27,13 @@ class Inputcustomizado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      //obscureText: this.obscure,
+      obscureText: this.obscure,
       controller: this.controller,
       autofocus: this.autofocus,
       keyboardType: this.type,
       inputFormatters: this.inputFormatters,
       validator: this.validator,
-      maxLines:  this.maxLines,
+
       style: TextStyle(fontSize: 20),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
