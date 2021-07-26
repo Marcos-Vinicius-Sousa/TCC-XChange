@@ -2,11 +2,16 @@
 import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:validadores/Validador.dart';
+import 'package:x_change/model/Anuncio.dart';
 import 'package:x_change/views/MenuLateral.dart';
 import 'package:x_change/views/widgets/BotaoCustomizado.dart';
 import 'package:x_change/views/widgets/Inputcustomizado.dart';
@@ -22,6 +27,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
   List<File> _listaImagens = List();
   List<DropdownMenuItem<String>> _listaItensCidades = List();
   List<DropdownMenuItem<String>> _listaItensCategorias = List();
+  Anuncio _anuncio;
+  BuildContext _dialogContext;
 
 
   _selecionarImagemGaleria() async {
@@ -35,11 +42,81 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     }
   }
 
+  _abriDialog(BuildContext context){
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(height: 20),
+              Text("Salvando Anúncio...")
+            ],
+            ),
+          );
+        }
+    );
+  }
+
+  _salvarAnuncio() async {
+    
+    _abriDialog(_dialogContext);
+
+    //Upload das imagens no Storage
+    await _uploadImagens();
+    print("Lista imagens: ${_anuncio.fotos.toString()}");
+
+    //Salvar anuncio no FireStore
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User usuarioLogado = await auth.currentUser;
+    String idUsuarioLogado = usuarioLogado.uid;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db.collection("meeus_anuncios")
+    .document(idUsuarioLogado)
+    .collection("anuncios")
+    .document(_anuncio.id)
+    .setData(_anuncio.toMap()).then((_){
+
+      //Navigator.pop(_dialogContext);
+      Navigator.pushReplacementNamed(context, "/meus-anuncios");
+    });
+
+  }
+
+  Future _uploadImagens() async{
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+
+    for(var imagem in _listaImagens){
+
+      String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
+      StorageReference arquivo = pastaRaiz
+      .child("meus_anuncios")
+      .child(_anuncio.id)
+      .child(nomeImagem);
+
+      StorageUploadTask uploadTask = arquivo.putFile(imagem);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+      String url = await taskSnapshot.ref.getDownloadURL();
+      _anuncio.fotos.add(url);
+    }
+
+
+
+  }
+
   @override
   void initState() {
 
     super.initState();
     _carregarItensDropdown();
+    _anuncio = Anuncio();
   }
 
   _carregarItensDropdown(){
@@ -207,6 +284,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
                         hint: Text("Cidades"),
+                        onSaved: (cidade){
+                          _anuncio.cidade = cidade;
+                        },
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20
@@ -227,6 +307,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
                         hint: Text("Categoria"),
+                        onSaved: (categoria){
+                          _anuncio.categoria = categoria;
+                        },
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 20
@@ -248,6 +331,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   padding: EdgeInsets.only(bottom: 15, top: 15),
                   child: Inputcustomizado(
                     hint: "Título",
+                    onSaved: (titulo){
+                      _anuncio.titulo = titulo;
+                    },
                     validator: (valor){
                       return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
                           .valido(valor);
@@ -258,6 +344,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   padding: EdgeInsets.only(bottom: 15),
                   child: Inputcustomizado(
                     hint: "Preço",
+                    onSaved: (preco){
+                      _anuncio.preco = preco;
+                    },
                     type: TextInputType.number,
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly,
@@ -273,6 +362,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   padding: EdgeInsets.only(bottom: 15),
                   child: Inputcustomizado(
                     hint: "Telefone",
+                    onSaved: (telefone){
+                      _anuncio.telefone = telefone;
+                    },
                     type: TextInputType.phone,
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly,
@@ -289,6 +381,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   child: Inputcustomizado(
                     hint: "Descrição (300 caracteres)",
                     maxLines: null,
+                    onSaved: (descricao){
+                      _anuncio.descricao = descricao;
+                    },
                     validator: (valor){
                       return Validador().add(Validar.OBRIGATORIO,msg: "Campo Obrigatório")
                       .maxLength(500,msg: "Máximo de 300 caracteres")
@@ -301,6 +396,14 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   onPressed: (){
                     if(_formKey.currentState.validate()){
 
+                      //salvar campos
+                      _formKey.currentState.save();
+
+                      //Configurando dialog context
+                      _dialogContext = context;
+
+                      //salvar Anuncio
+                      _salvarAnuncio();
                     }
                   }
                 )

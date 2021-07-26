@@ -19,6 +19,9 @@ class _CadastroState extends State<Cadastro> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerSenha = TextEditingController();
   String _mensagemErro = "";
+  
+
+
 
   _validarCampos(){
 
@@ -39,6 +42,7 @@ class _CadastroState extends State<Cadastro> {
           usuario.email = email;
           usuario.senha = senha;
 
+
           _cadastrarUsuario(usuario);
         }else{
           setState(() {
@@ -58,6 +62,8 @@ class _CadastroState extends State<Cadastro> {
   }
 
   _cadastrarUsuario(Usuario usuario){
+
+
 
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.createUserWithEmailAndPassword(
