@@ -19,7 +19,7 @@ class _CadastroState extends State<Cadastro> {
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerSenha = TextEditingController();
   String _mensagemErro = "";
-  
+
 
 
 

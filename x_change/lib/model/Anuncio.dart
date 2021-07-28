@@ -13,7 +13,25 @@ class Anuncio{
   String _descricao;
   List<String> _fotos;
 
-  Anuncio() {
+  Anuncio();
+
+  Anuncio.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
+
+    this.id = documentSnapshot.id;
+    this.cidade = documentSnapshot["cidade"];
+    this.categoria = documentSnapshot["categoria"];
+    this.titulo = documentSnapshot["titulo"];
+    this.preco = documentSnapshot["preco"];
+    this.telefone = documentSnapshot["telefone"];
+    this.descricao = documentSnapshot["descricao"];
+    this.fotos = List<String>.from(documentSnapshot["fotos"]);
+
+
+
+
+  }
+
+  Anuncio.gerarId() {
     FirebaseFirestore db = FirebaseFirestore.instance;
     CollectionReference anuncios = db.collection("meus_anuncios");
     this.id = anuncios

@@ -82,7 +82,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     .setData(_anuncio.toMap()).then((_){
 
       //Navigator.pop(_dialogContext);
-      Navigator.pushReplacementNamed(context, "/meus-anuncios");
+      Navigator.pushReplacementNamed(context,"/meus-anuncios");
     });
 
   }
@@ -116,7 +116,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
 
     super.initState();
     _carregarItensDropdown();
-    _anuncio = Anuncio();
+    _anuncio = Anuncio.gerarId();
   }
 
   _carregarItensDropdown(){
