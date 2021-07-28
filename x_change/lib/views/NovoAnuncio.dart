@@ -81,8 +81,15 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     .document(_anuncio.id)
     .setData(_anuncio.toMap()).then((_){
 
-      //Navigator.pop(_dialogContext);
-      Navigator.pushReplacementNamed(context,"/meus-anuncios");
+      //salvando anuncio publico
+      db.collection("anuncios")
+        .doc(_anuncio.id)
+        .set(_anuncio.toMap()).then((_){
+
+        //Navigator.pop(_dialogContext);
+        Navigator.pushReplacementNamed(context,"/meus-anuncios");
+      });
+
     });
 
   }
@@ -283,7 +290,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                     child: Padding(
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
-                        hint: Text("Cidades"),
+                        hint: Text("Cidades",
+                        style: TextStyle(color: Colors.blue)),
                         onSaved: (cidade){
                           _anuncio.cidade = cidade;
                         },
@@ -306,7 +314,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                     child: Padding(
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
-                        hint: Text("Categoria"),
+                        hint: Text("Categoria",
+                            style: TextStyle(color: Colors.blue)),
                         onSaved: (categoria){
                           _anuncio.categoria = categoria;
                         },

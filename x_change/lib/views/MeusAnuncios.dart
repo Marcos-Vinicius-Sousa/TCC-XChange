@@ -41,6 +41,20 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
     });
   }
 
+  _removerAnuncio(String idAnuncio){
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db.collection("meeus_anuncios")
+      .doc(_idUsuarioLogado)
+      .collection("anuncios")
+      .doc(idAnuncio)
+      .delete().then((_){
+        db.collection("anuncios")
+            .doc(idAnuncio)
+            .delete();
+    });
+  }
+
   @override
   void initState() {
     _adicionarListenerAnuncios();
@@ -103,6 +117,39 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
 
                     return ItemAnuncio(
                       anuncio: anuncio,
+                      onPressRemover: (){
+                        showDialog(
+                            context: context,
+                          builder: (context){
+                              return AlertDialog(
+                                title: Text("Confirmar"),
+                                content: Text("Deseja realmente excluir o anúncio ?"),
+                                actions: <Widget>[
+
+                                  FlatButton(
+                                    child: Text("Cancelar",
+                                    style: TextStyle(color: Colors.green
+                                    )
+                                    ),
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("Remover",
+                                        style: TextStyle(color: Colors.red
+                                        )
+                                    ),
+                                    onPressed: (){
+                                      _removerAnuncio(anuncio.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                          }
+                        );
+                      },
                     );
                   }
               );
