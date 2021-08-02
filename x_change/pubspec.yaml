@@ -33,6 +33,7 @@ dependencies:
   image_picker: ^0.6.7+22
   brasil_fields: ^0.0.9
   validadores: ^1.0.2
+  carousel_pro: ^1.0.0
 
 dev_dependencies:
   flutter_test:

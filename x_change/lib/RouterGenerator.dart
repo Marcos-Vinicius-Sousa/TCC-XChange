@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:x_change/Login.dart';
 import 'package:x_change/views/Anuncios.dart';
+import 'package:x_change/views/DetalhesAnuncios.dart';
 import 'package:x_change/views/MeusAnuncios.dart';
 import 'package:x_change/views/NovoAnuncio.dart';
 
@@ -29,6 +30,11 @@ class RouterGenerator {
       case"/novo-anuncio":
         return MaterialPageRoute(
             builder: (_) => NovoAnuncio()
+        );
+        break;
+      case"/detalhes-anuncio":
+        return MaterialPageRoute(
+          builder: (_) => DetalhesAnuncios(args)
         );
         break;
       default:

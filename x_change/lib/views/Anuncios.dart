@@ -50,6 +50,23 @@ class _AnunciosState extends State<Anuncios> {
     _listaItensCidades = Config.getCidades();
   }
 
+  Future<Stream<QuerySnapshot>> _filtrarAnuncios() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    Query  query = db.collection("anuncios");
+
+    if( _itemSelecionadoCidade != null){
+      query = query.where("cidade", isEqualTo: _itemSelecionadoCidade);
+    }
+    if( _itemSelecionadoCategoria != null){
+      query = query.where("categoria", isEqualTo: _itemSelecionadoCategoria);
+    }
+
+    Stream<QuerySnapshot> stream = query.snapshots();
+    stream.listen((dados) {
+      _controller.add(dados);
+    });
+  }
+
   Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
     Stream<QuerySnapshot> stream = db
@@ -72,6 +89,15 @@ class _AnunciosState extends State<Anuncios> {
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
+
+    var carregandoDados = Center(
+      child: Column(
+        children: <Widget>[
+          Text("Carregando anúncios"),
+          CircularProgressIndicator()
+        ],
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text("X-Change"),
@@ -99,6 +125,7 @@ class _AnunciosState extends State<Anuncios> {
                         onChanged: (cidade) {
                           setState(() {
                             _itemSelecionadoCidade = cidade;
+                            _filtrarAnuncios();
                           });
                         }
                     ),
@@ -126,6 +153,7 @@ class _AnunciosState extends State<Anuncios> {
                         onChanged: (categoria) {
                           setState(() {
                             _itemSelecionadoCategoria = categoria;
+                            _filtrarAnuncios();
                           });
                         }
                     ),
@@ -141,6 +169,8 @@ class _AnunciosState extends State<Anuncios> {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
+                  return carregandoDados;
+                  break;
                 case ConnectionState.active:
                 case ConnectionState.done:
                   QuerySnapshot querySnapshot = snapshot.data;
@@ -169,9 +199,13 @@ class _AnunciosState extends State<Anuncios> {
 
                           return ItemAnuncio(
                               anuncio: anuncio,
-                          onTapIem: (){
-
-                          }
+                              onTapIem: (){
+                                Navigator.pushNamed(
+                                    context,
+                                    "/detalhes-anuncio",
+                                    arguments: anuncio
+                                );
+                            }
                           );
                           }
                         ),

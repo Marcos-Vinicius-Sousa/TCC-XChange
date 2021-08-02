@@ -18,6 +18,7 @@ class _CadastroState extends State<Cadastro> {
   TextEditingController _controllerNome = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
   TextEditingController _controllerSenha = TextEditingController();
+  TextEditingController _controllerConfirmacaoSenha = TextEditingController();
   String _mensagemErro = "";
 
 
@@ -26,10 +27,11 @@ class _CadastroState extends State<Cadastro> {
     String nome = _controllerNome.text;
     String email = _controllerEmail.text;
     String senha = _controllerSenha.text;
+    String confirmasenha = _controllerConfirmacaoSenha.text;
 
     if (/*nome.isNotEmpty && */ nome.length > 3) {
       if (email.isNotEmpty && email.contains("@")) {
-        if (senha.isNotEmpty && senha.length > 6) {
+        if (senha.isNotEmpty && senha.length > 6 && senha == confirmasenha) {
           setState(() {
             _mensagemErro = "";
           });
@@ -43,7 +45,7 @@ class _CadastroState extends State<Cadastro> {
           _cadastrarUsuario(usuario);
         } else {
           setState(() {
-            _mensagemErro = "Senha deve ter mais do que 6 caracteres";
+            _mensagemErro = "Senha deve ter mais do que 6 caracteres e deve ser igual a confirmação de senha";
           });
         }
       } else {
@@ -137,14 +139,30 @@ class _CadastroState extends State<Cadastro> {
                               borderRadius: BorderRadius.circular(32))),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      obscureText: true,
+                      controller: _controllerSenha,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          hintText: "Senha",
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32))),
+                    ),
+                  ),
                   TextField(
                     obscureText: true,
-                    controller: _controllerSenha,
+                    controller: _controllerConfirmacaoSenha,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Senha",
+                        hintText: "Confirme a Senha",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -157,7 +175,7 @@ class _CadastroState extends State<Cadastro> {
                         "Cadastrar",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                      color: Colors.orangeAccent,
+                      color: Colors.deepOrange,
                       padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
