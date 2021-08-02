@@ -1,14 +1,15 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:x_change/views/Avaliacao.dart';
-import 'package:x_change/views/Buscar.dart';
+import 'package:x_change/model/Anuncio.dart';
+import 'package:x_change/util/Config.dart';
 import 'package:x_change/views/MenuLateral.dart';
-import 'package:x_change/views/MeusAnuncios.dart';
-import 'package:x_change/views/PedidosTrocas.dart';
-import 'package:x_change/views/Perfil.dart';
-import 'package:x_change/views/Planos.dart';
-import 'package:x_change/views/Sobre.dart';
+import 'package:x_change/views/widgets/itemAnuncio.dart';
+
 
 class Anuncios extends StatefulWidget {
   @override
@@ -17,34 +18,54 @@ class Anuncios extends StatefulWidget {
 
 class _AnunciosState extends State<Anuncios> {
 
+  String _itemSelecionadoCidade;
+  String _itemSelecionadoCategoria;
+  List<DropdownMenuItem<String>> _listaItensCidades;
+  List<DropdownMenuItem<String>> _listaItensCategorias;
+  final _controller = StreamController<QuerySnapshot>.broadcast();
+
 
   Future _verificarUsuarioLogado() async {
-
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
     // recuperando o usuario que esta logado no momento
     Auth.User usuarioLogado = await auth.currentUser;
-    if(usuarioLogado != null){
-
-      Navigator.pushReplacementNamed(context,"/");
-
+    if (usuarioLogado != null) {
+      Navigator.pushReplacementNamed(context, "/");
     }
   }
 
-  String _emailUsuario = "";
-  Future _recuperarEmail() async {
+  //String _emailUsuario = "";
+
+ /* Future _recuperarEmail() async {
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
     Auth.User usuarioLogado = await auth.currentUser;
 
     setState(() {
       _emailUsuario = usuarioLogado.email;
     });
+  } */
+
+  _carregarItensDropdown() {
+    _listaItensCategorias = Config.getCategorias();
+    _listaItensCidades = Config.getCidades();
   }
 
+  Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    Stream<QuerySnapshot> stream = db
+        .collection("anuncios")
+        .snapshots();
 
+    stream.listen((dados) {
+      _controller.add(dados);
+    });
+  }
 
   @override
   void initState() {
-    _recuperarEmail();
+    _carregarItensDropdown();
+    //_recuperarEmail();
+    _adicionarListenerAnuncios();
     super.initState();
   }
 
@@ -55,90 +76,115 @@ class _AnunciosState extends State<Anuncios> {
       appBar: AppBar(
         title: Text("X-Change"),
         centerTitle: true,
+        backgroundColor: Colors.indigo,
+        shadowColor: Colors.indigoAccent,
       ),
       drawer: MenuLateral(),
       body: Center(
-        child: Text(_emailUsuario),
+        child: Column(children: <Widget>[
+
+          Row(children: <Widget>[
+
+            Expanded(
+              child: DropdownButtonHideUnderline(
+                  child: Center(
+                    child: DropdownButton(
+                        iconEnabledColor: Colors.blue,
+                        value: _itemSelecionadoCidade,
+                        items: _listaItensCidades,
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.black
+                        ),
+                        onChanged: (cidade) {
+                          setState(() {
+                            _itemSelecionadoCidade = cidade;
+                          });
+                        }
+                    ),
+                  )
+              ),
+            ),
+
+            Container(
+              color: Colors.green[200],
+              width: 2,
+              height: 60,
+            ),
+
+            Expanded(
+              child: DropdownButtonHideUnderline(
+                  child: Center(
+                    child: DropdownButton(
+                        iconEnabledColor: Colors.blue,
+                        value: _itemSelecionadoCategoria,
+                        items: _listaItensCategorias,
+                        style: TextStyle(
+                            fontSize: 22,
+                            color: Colors.black
+                        ),
+                        onChanged: (categoria) {
+                          setState(() {
+                            _itemSelecionadoCategoria = categoria;
+                          });
+                        }
+                    ),
+                  )
+              ),
+            )
+
+          ],),
+
+          StreamBuilder(
+            stream: _controller.stream,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                case ConnectionState.active:
+                case ConnectionState.done:
+                  QuerySnapshot querySnapshot = snapshot.data;
+                  if (querySnapshot.docs.length == 0) {
+                    return Container(
+                      padding: EdgeInsets.all(25),
+                      child: Text("Nenhum anúncio! ",
+                        style: TextStyle(
+                            fontSize: 20,
+                            // ignore: missing_return, missing_return
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: querySnapshot.docs.length,
+                        itemBuilder: (_,indice){
+                          List<DocumentSnapshot> anuncios = querySnapshot.documents
+                              .toList();
+                          DocumentSnapshot documentSnapshot = anuncios[indice];
+                          Anuncio anuncio = Anuncio.fromDocumentSnapshot(
+                              documentSnapshot);
+
+                          return ItemAnuncio(
+                              anuncio: anuncio,
+                          onTapIem: (){
+
+                          }
+                          );
+                          }
+                        ),
+                  );
+              }
+
+              return Container();
+            },
+          )
+        ],
+        ),
       ),
     );
   }
 }
 
-/* Drawer(
-          child:ListView(
-            children: [
-              ListTile(
-                leading: Icon(Icons.home),
-                title: Text("Home"),
-                subtitle:Text("Pagina Inicial"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  editarPerfil();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text("Perfil"),
-                subtitle:Text("Editar perfil"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  editarPerfil();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.add),
-                title: Text("Meus Anuncios"),
-                subtitle:Text("Crie seu Anuncio"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  meusAnuncios();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.search),
-                title: Text("Buscar"),
-                subtitle:Text("produtos ou serviços"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  buscar();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.find_replace),
-                title: Text("Atualizar Plano"),
-                subtitle:Text("mudar plano"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  editarPlanos();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.timeline),
-                title: Text("Avaliações"),
-                subtitle:Text("suas avaliações"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  avaliar();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.build),
-                title: Text("Sobre"),
-                subtitle:Text("Conheça xChange"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  sobre();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.transit_enterexit),
-                title: Text("Sair"),
-                subtitle:Text("Deslogar"),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: (){
-                  _deslogarUsuario();
-                },
-              ),
-            ],
-          )
-      ) */

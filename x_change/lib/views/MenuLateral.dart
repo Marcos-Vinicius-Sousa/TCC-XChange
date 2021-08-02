@@ -18,57 +18,49 @@ class MenuLateral extends StatefulWidget {
 
 class _MenuLateralState extends State<MenuLateral> {
 
-  void avaliar(){
-
+  void avaliar() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Avaliacao()));
   }
 
-  void editarPerfil(){
-
+  void editarPerfil() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Perfil()));
   }
 
-  void trocar(){
-
+  void trocar() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => PedidosTrocas()));
   }
 
-  void buscar(){
-
+  void buscar() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Buscar()));
   }
 
-  void sobre(){
-
+  void sobre() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Sobre()));
   }
 
-  void home(){
-
+  void home() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Anuncios()));
   }
 
-  void meusAnuncios(){
-
+  void meusAnuncios() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MeusAnuncios()));
   }
 
   _deslogarUsuario() async {
-
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
     await auth.signOut();
 
@@ -78,41 +70,41 @@ class _MenuLateralState extends State<MenuLateral> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child:ListView(
+        child: ListView(
           children: [
             ListTile(
               leading: Icon(Icons.home),
               title: Text("Home"),
-              subtitle:Text("Pagina Inicial"),
+              subtitle: Text("Pagina Inicial"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 home();
               },
             ),
             ListTile(
               leading: Icon(Icons.person),
               title: Text("Perfil"),
-              subtitle:Text("Editar perfil"),
+              subtitle: Text("Editar perfil"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 editarPerfil();
               },
             ),
             ListTile(
               leading: Icon(Icons.add),
               title: Text("Meus Anuncios"),
-              subtitle:Text("Crie seu Anuncio"),
+              subtitle: Text("Crie seu Anuncio"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 meusAnuncios();
               },
             ),
             ListTile(
               leading: Icon(Icons.search),
               title: Text("Buscar"),
-              subtitle:Text("produtos ou serviços"),
+              subtitle: Text("produtos ou serviços"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 buscar();
               },
             ),
@@ -120,27 +112,27 @@ class _MenuLateralState extends State<MenuLateral> {
             ListTile(
               leading: Icon(Icons.timeline),
               title: Text("Avaliações"),
-              subtitle:Text("suas avaliações"),
+              subtitle: Text("suas avaliações"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 avaliar();
               },
             ),
             ListTile(
               leading: Icon(Icons.build),
               title: Text("Sobre"),
-              subtitle:Text("Conheça xChange"),
+              subtitle: Text("Conheça xChange"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 sobre();
               },
             ),
             ListTile(
               leading: Icon(Icons.transit_enterexit),
               title: Text("Sair"),
-              subtitle:Text("Deslogar"),
+              subtitle: Text("Deslogar"),
               trailing: Icon(Icons.arrow_forward_ios),
-              onTap: (){
+              onTap: () {
                 _deslogarUsuario();
               },
             ),

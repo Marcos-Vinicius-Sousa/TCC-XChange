@@ -11,8 +11,9 @@ class _PedidosTrocasState extends State<PedidosTrocas> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Pedidos"),
-          centerTitle: true,
+            title: Text("Pedidos"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
         ),
         drawer: MenuLateral(),
         body: Center(

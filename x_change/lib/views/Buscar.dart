@@ -11,8 +11,9 @@ class _BuscarState extends State<Buscar> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Pesquisar"),
-          centerTitle: true,
+            title: Text("Pesquisar"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
         ),
         drawer: MenuLateral(),
         body: Center(

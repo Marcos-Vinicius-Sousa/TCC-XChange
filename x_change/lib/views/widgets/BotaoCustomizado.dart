@@ -11,21 +11,21 @@ class BotaoCustomizado extends StatelessWidget {
     this.corTexto = Colors.white,
     this.onPressed
 
-});
+  });
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      child: Text(
-        this.texto,
-        style: TextStyle(color: corTexto, fontSize: 20),
-      ),
-      color: Colors.deepOrange,
-      padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)
-      ),
-      onPressed: this.onPressed
+        child: Text(
+          this.texto,
+          style: TextStyle(color: corTexto, fontSize: 20),
+        ),
+        color: Colors.deepOrange,
+        padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)
+        ),
+        onPressed: this.onPressed
     );
-}
+  }
 }

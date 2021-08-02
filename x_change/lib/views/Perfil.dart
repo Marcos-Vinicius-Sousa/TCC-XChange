@@ -11,8 +11,9 @@ class _PerfilState extends State<Perfil> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Perfil"),
-          centerTitle: true,
+            title: Text("Perfil"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
         ),
         drawer: MenuLateral(),
         body: Center(

@@ -1,8 +1,6 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Anuncio{
+class Anuncio {
 
   String _id;
   String _cidade;
@@ -16,7 +14,6 @@ class Anuncio{
   Anuncio();
 
   Anuncio.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
-
     this.id = documentSnapshot.id;
     this.cidade = documentSnapshot["cidade"];
     this.categoria = documentSnapshot["categoria"];
@@ -25,10 +22,6 @@ class Anuncio{
     this.telefone = documentSnapshot["telefone"];
     this.descricao = documentSnapshot["descricao"];
     this.fotos = List<String>.from(documentSnapshot["fotos"]);
-
-
-
-
   }
 
   Anuncio.gerarId() {
@@ -41,17 +34,16 @@ class Anuncio{
     this.fotos = [];
   }
 
-  Map<String, dynamic> toMap(){
-
+  Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      "id" : this.id,
+      "id": this.id,
       "cidade": this.cidade,
       "categoria": this.categoria,
       "titulo": this.titulo,
       "preco": this.preco,
       "telefone": this.telefone,
       "descricao": this.descricao,
-      "fotos" : this.fotos
+      "fotos": this.fotos
     };
 
     return map;

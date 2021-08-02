@@ -12,14 +12,15 @@ class _AvaliacaoState extends State<Avaliacao> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Avaliação"),
-        centerTitle: true,
-      ),
-     drawer: MenuLateral(),
-      body: Center(
-        child: Text("Avalie"),
-      )
+        appBar: AppBar(
+            title: Text("Avaliação"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
+        ),
+        drawer: MenuLateral(),
+        body: Center(
+          child: Text("Avalie"),
+        )
     );
   }
 }

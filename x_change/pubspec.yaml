@@ -54,6 +54,6 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-      - imagem/logo.png
-      - imagem/usuario.png
-      - imagem/logoxchange.jpg
+    - imagem/logo.png
+    - imagem/usuario.png
+    - imagem/logoxchange.jpg

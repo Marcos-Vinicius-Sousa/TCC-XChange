@@ -19,39 +19,36 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
   String _idUsuarioLogado;
 
   _recuperarDadosUsuarios() async {
-
     FirebaseAuth auth = FirebaseAuth.instance;
     User usuarioLogado = await auth.currentUser;
-      _idUsuarioLogado = usuarioLogado.uid;
+    _idUsuarioLogado = usuarioLogado.uid;
   }
 
-  Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async{
-
+  Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async {
     await _recuperarDadosUsuarios();
 
-      FirebaseFirestore db = FirebaseFirestore.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
     Stream<QuerySnapshot> stream = db
         .collection("meeus_anuncios")
         .document(_idUsuarioLogado)
         .collection("anuncios")
         .snapshots();
-    
+
     stream.listen((dados) {
       _controller.add(dados);
     });
   }
 
-  _removerAnuncio(String idAnuncio){
-
+  _removerAnuncio(String idAnuncio) {
     FirebaseFirestore db = FirebaseFirestore.instance;
     db.collection("meeus_anuncios")
-      .doc(_idUsuarioLogado)
-      .collection("anuncios")
-      .doc(idAnuncio)
-      .delete().then((_){
-        db.collection("anuncios")
-            .doc(idAnuncio)
-            .delete();
+        .doc(_idUsuarioLogado)
+        .collection("anuncios")
+        .doc(idAnuncio)
+        .delete().then((_) {
+      db.collection("anuncios")
+          .doc(idAnuncio)
+          .delete();
     });
   }
 
@@ -63,7 +60,6 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
 
   @override
   Widget build(BuildContext context) {
-
     var carregandoDados = Center(
 
       child: Column(
@@ -75,88 +71,89 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
       ),
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Meus Anúncios"),
-        centerTitle: true,
-      ),
-      drawer: MenuLateral(),
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
-        child: Icon(Icons.add),
-        onPressed: (){
-          Navigator.pushNamed(context, "/novo-anuncio");
-        },
-      ),
-      body: StreamBuilder(
-        stream: _controller.stream,
-        builder: (context, snapshot){
+        appBar: AppBar(
+            title: Text("Meus Anúncios"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
+        ),
+        drawer: MenuLateral(),
+        floatingActionButton: FloatingActionButton(
+          foregroundColor: Colors.white,
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(context, "/novo-anuncio");
+          },
+        ),
+        body: StreamBuilder(
+          stream: _controller.stream,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
 
-          switch(snapshot.connectionState){
+              case ConnectionState.waiting:
+                return carregandoDados;
+                break;
 
-            case ConnectionState.none:
+              case ConnectionState.active:
 
-            case ConnectionState.waiting:
-              return carregandoDados;
-              break;
+              case ConnectionState.done:
+                if (snapshot.hasError)
+                  return Text("Erro ao carregar dados.");
 
-            case ConnectionState.active:
+                QuerySnapshot querySnapshot = snapshot.data;
 
-            case ConnectionState.done:
-              if(snapshot.hasError)
-                return Text("Erro ao carregar dados.");
+                return ListView.builder(
+                    itemCount: querySnapshot.documents.length,
+                    itemBuilder: (_, indice) {
+                      List<DocumentSnapshot> anuncios = querySnapshot.documents
+                          .toList();
+                      DocumentSnapshot documentSnapshot = anuncios[indice];
+                      Anuncio anuncio = Anuncio.fromDocumentSnapshot(
+                          documentSnapshot);
 
-              QuerySnapshot querySnapshot = snapshot.data;
+                      return ItemAnuncio(
+                        anuncio: anuncio,
+                        onPressRemover: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Confirmar"),
+                                  content: Text(
+                                      "Deseja realmente excluir o anúncio ?"),
+                                  actions: <Widget>[
 
-              return ListView.builder(
-                  itemCount: querySnapshot.documents.length,
-                  itemBuilder: (_,indice){
-
-                    List<DocumentSnapshot> anuncios = querySnapshot.documents.toList();
-                    DocumentSnapshot documentSnapshot = anuncios[indice];
-                    Anuncio anuncio = Anuncio.fromDocumentSnapshot(documentSnapshot);
-
-                    return ItemAnuncio(
-                      anuncio: anuncio,
-                      onPressRemover: (){
-                        showDialog(
-                            context: context,
-                          builder: (context){
-                              return AlertDialog(
-                                title: Text("Confirmar"),
-                                content: Text("Deseja realmente excluir o anúncio ?"),
-                                actions: <Widget>[
-
-                                  FlatButton(
-                                    child: Text("Cancelar",
-                                    style: TextStyle(color: Colors.green
+                                    FlatButton(
+                                      child: Text("Cancelar",
+                                          style: TextStyle(color: Colors.green
+                                          )
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text("Remover",
+                                          style: TextStyle(color: Colors.red
+                                          )
+                                      ),
+                                      onPressed: () {
+                                        _removerAnuncio(anuncio.id);
+                                        Navigator.of(context).pop();
+                                      },
                                     )
-                                    ),
-                                    onPressed: (){
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  FlatButton(
-                                    child: Text("Remover",
-                                        style: TextStyle(color: Colors.red
-                                        )
-                                    ),
-                                    onPressed: (){
-                                      _removerAnuncio(anuncio.id);
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                          }
-                        );
-                      },
-                    );
-                  }
-              );
-          }
-          return Column();
-        },
-      )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                      );
+                    }
+                );
+            }
+            return Column();
+          },
+        )
     );
   }
 }

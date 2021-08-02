@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart'as Auth;
+import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +21,14 @@ class _LoginState extends State<Login> {
   TextEditingController _controllerSenha = TextEditingController();
   String _mensagemErro = "";
 
-  _validarCampos(){
-
+  _validarCampos() {
     // Recuperando dados dos campos
 
     String email = _controllerEmail.text;
     String senha = _controllerSenha.text;
 
-    if(email.isNotEmpty && email.contains("@")){
-
-      if(senha.isNotEmpty ){
+    if (email.isNotEmpty && email.contains("@")) {
+      if (senha.isNotEmpty) {
         setState(() {
           _mensagemErro = "";
         });
@@ -38,27 +36,24 @@ class _LoginState extends State<Login> {
         usuario.email = email.replaceAll(" ", "");
         usuario.senha = senha.replaceAll(" ", "");
         _logarUsuario(usuario);
-
-      }else{
+      } else {
         setState(() {
           _mensagemErro = "Preencha a senha.";
         });
       }
-    }else{
+    } else {
       setState(() {
         _mensagemErro = "Preencha o e-mail utilizando  @";
       });
     }
   }
 
-  _logarUsuario(Usuario usuario){
-
+  _logarUsuario(Usuario usuario) {
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
     auth.signInWithEmailAndPassword(
         email: usuario.email,
         password: usuario.senha
-    ).then((firebaseUser){
-
+    ).then((firebaseUser) {
       //Navigator.pushReplacementNamed(context,"/");
       Navigator.pushReplacement(
           context,
@@ -66,25 +61,21 @@ class _LoginState extends State<Login> {
               builder: (context) => Anuncios()
           )
       );
-
-
-    }).catchError((error){
+    }).catchError((error) {
       setState(() {
-        _mensagemErro = "Erro ao identificar usuário, verifique e-mail e senha e tente novamente.";
+        _mensagemErro =
+        "Erro ao identificar usuário, verifique e-mail e senha e tente novamente.";
       });
     });
   }
 
   Future _verificarUsuarioLogado() async {
-
     Auth.FirebaseAuth auth = Auth.FirebaseAuth.instance;
     auth.signOut();
     // recuperando o usuario que esta logado no momento
     Auth.User usuarioLogado = await auth.currentUser;
-    if(usuarioLogado != null){
-
-      Navigator.pushReplacementNamed(context,"/");
-
+    if (usuarioLogado != null) {
+      Navigator.pushReplacementNamed(context, "/");
     }
   }
 
@@ -99,7 +90,7 @@ class _LoginState extends State<Login> {
     Firebase.initializeApp();
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(color: Colors.blueAccent),
+        decoration: BoxDecoration(color: Colors.indigo),
         padding: EdgeInsets.all(16),
         child: Center(
             child: SingleChildScrollView(
@@ -108,7 +99,8 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: 32),
-                    child: Image.asset("imagem/logo.png", width: 250, height: 200),
+                    child: Image.asset(
+                        "imagem/logo.png", width: 250, height: 200),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
@@ -126,14 +118,14 @@ class _LoginState extends State<Login> {
                     obscure: true,
                   ),
                   Padding(
-                      padding: EdgeInsets.only(top: 16, bottom: 10),
-                      child:BotaoCustomizado(
-                        texto: "Entrar",
-                        onPressed: (){
-                          _validarCampos();
-                        },
+                    padding: EdgeInsets.only(top: 16, bottom: 10),
+                    child: BotaoCustomizado(
+                      texto: "Entrar",
+                      onPressed: () {
+                        _validarCampos();
+                      },
 
-                      ),
+                    ),
                   ),
 
                   /*Padding(
@@ -162,11 +154,11 @@ class _LoginState extends State<Login> {
                             color: Colors.white
                         ),
                       ),
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context)=> Cadastro()
+                                builder: (context) => Cadastro()
                             )
                         );
                       },
@@ -175,7 +167,7 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Center(
-                        child:Text(
+                        child: Text(
                             _mensagemErro,
                             style: TextStyle(
                                 color: Colors.white,

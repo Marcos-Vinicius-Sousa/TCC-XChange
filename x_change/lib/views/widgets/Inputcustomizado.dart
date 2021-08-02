@@ -6,6 +6,7 @@ class Inputcustomizado extends StatelessWidget {
 
   final TextEditingController controller;
   final String hint;
+
   //final bool obscure;
   final bool autofocus;
   final TextInputType type;
@@ -37,7 +38,7 @@ class Inputcustomizado extends StatelessWidget {
       inputFormatters: this.inputFormatters,
       validator: this.validator,
       onSaved: this.onSaved,
-      maxLines:  this.maxLines,
+      maxLines: this.maxLines,
       style: TextStyle(fontSize: 20),
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),

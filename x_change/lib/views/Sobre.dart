@@ -11,8 +11,9 @@ class _SobreState extends State<Sobre> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Sobre"),
-          centerTitle: true,
+            title: Text("Sobre"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
         ),
         drawer: MenuLateral(),
         body: Center(

@@ -11,8 +11,9 @@ class _PlanosState extends State<Planos> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Planos"),
-          centerTitle: true,
+            title: Text("Planos"),
+            centerTitle: true,
+            backgroundColor: Colors.indigo
         ),
         drawer: MenuLateral(),
         body: Center(

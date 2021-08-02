@@ -8,13 +8,12 @@ class ItemAnuncio extends StatelessWidget {
   VoidCallback onTapIem;
   VoidCallback onPressRemover;
 
-  ItemAnuncio(
-      {
-        @required this.anuncio,
-        this.onTapIem,
-        this.onPressRemover
+  ItemAnuncio({
+    @required this.anuncio,
+    this.onTapIem,
+    this.onPressRemover
 
-    });
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +40,14 @@ class ItemAnuncio extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                    Text(anuncio.titulo,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                    )
-                    ),
-                    Text("R\$ ${anuncio.preco}")
-                  ],
+                      Text(anuncio.titulo,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
+                      Text("R\$ ${anuncio.preco}")
+                    ],
 
                   ),
                 ),

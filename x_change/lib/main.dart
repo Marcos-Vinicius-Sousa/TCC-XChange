@@ -6,15 +6,14 @@ import 'views/Anuncios.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
-void main() async{
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
   runApp(MaterialApp(
     home: Login(),
     title: "xChange",
     theme: ThemeData(
-        primaryColor: Colors.blue,
+        primaryColor: Colors.indigo,
         accentColor: Colors.deepOrange
     ),
     initialRoute: "/",

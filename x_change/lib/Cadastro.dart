@@ -21,18 +21,15 @@ class _CadastroState extends State<Cadastro> {
   String _mensagemErro = "";
 
 
-
-
-  _validarCampos(){
-
+  _validarCampos() {
     // Recuperando dados dos campos
     String nome = _controllerNome.text;
     String email = _controllerEmail.text;
     String senha = _controllerSenha.text;
 
-    if(/*nome.isNotEmpty && */ nome.length > 3 ){
-      if(email.isNotEmpty && email.contains("@")){
-        if(senha.isNotEmpty && senha.length > 6 ){
+    if (/*nome.isNotEmpty && */ nome.length > 3) {
+      if (email.isNotEmpty && email.contains("@")) {
+        if (senha.isNotEmpty && senha.length > 6) {
           setState(() {
             _mensagemErro = "";
           });
@@ -44,33 +41,29 @@ class _CadastroState extends State<Cadastro> {
 
 
           _cadastrarUsuario(usuario);
-        }else{
+        } else {
           setState(() {
             _mensagemErro = "Senha deve ter mais do que 6 caracteres";
           });
         }
-      }else{
+      } else {
         setState(() {
           _mensagemErro = "Preencha o e-mail utilizando  @";
         });
       }
-    }else{
+    } else {
       setState(() {
         _mensagemErro = "Nome precisa ter mais do que 3 caracteres.";
       });
     }
   }
 
-  _cadastrarUsuario(Usuario usuario){
-
-
-
+  _cadastrarUsuario(Usuario usuario) {
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.createUserWithEmailAndPassword(
         email: usuario.email,
         password: usuario.senha
-    ).then((firebaseUser){
-
+    ).then((firebaseUser) {
       // Salvando dados do usuario
       FirebaseFirestore db = FirebaseFirestore.instance;
       db.collection("usuarios")
@@ -83,11 +76,11 @@ class _CadastroState extends State<Cadastro> {
               builder: (context) => Anuncios()
           )
       );
-
-    }).catchError((error){
+    }).catchError((error) {
       setState(() {
-        print("erro app: " + error.toString() );
-        _mensagemErro = "Erro ao cadastrar usuário, verifique os campos e tente novamente.";
+        print("erro app: " + error.toString());
+        _mensagemErro =
+        "Erro ao cadastrar usuário, verifique os campos e tente novamente.";
       });
     });
   }
@@ -97,10 +90,11 @@ class _CadastroState extends State<Cadastro> {
     Firebase.initializeApp();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro"),
+          title: Text("Cadastro"),
+          backgroundColor: Colors.indigo
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.blueAccent),
+        decoration: BoxDecoration(color: Colors.indigo),
         padding: EdgeInsets.all(16),
         child: Center(
             child: SingleChildScrollView(
@@ -109,7 +103,8 @@ class _CadastroState extends State<Cadastro> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: 32),
-                    child: Image.asset("imagem/usuario.png", width: 200, height: 150),
+                    child: Image.asset(
+                        "imagem/usuario.png", width: 200, height: 150),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
@@ -172,7 +167,7 @@ class _CadastroState extends State<Cadastro> {
                     ),
                   ),
                   Center(
-                      child:Text(
+                      child: Text(
                           _mensagemErro,
                           style: TextStyle(
                               color: Colors.white,
