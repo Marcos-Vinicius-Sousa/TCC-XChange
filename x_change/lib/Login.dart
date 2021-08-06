@@ -100,7 +100,8 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 32),
                     child: Image.asset(
-                        "imagem/logo.png", width: 250, height: 200),
+                        "imagem/ativo5.png", width: 100, height: 100
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),

@@ -88,7 +88,7 @@ class _DetalhesAnunciosState extends State<DetalhesAnuncios> {
                     "${_anuncio.titulo}",
                     style: TextStyle(
                         fontSize: 25,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.bold,
                     ),
                   ),
                   Padding(
@@ -99,7 +99,7 @@ class _DetalhesAnunciosState extends State<DetalhesAnuncios> {
                     "Descrição",
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
@@ -116,7 +116,7 @@ class _DetalhesAnunciosState extends State<DetalhesAnuncios> {
                     "Contato",
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Padding(
