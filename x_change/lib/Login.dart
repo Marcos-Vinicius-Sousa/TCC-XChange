@@ -98,10 +98,23 @@ class _LoginState extends State<Login> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(bottom: 32),
+                    padding: EdgeInsets.only(bottom: 10),
+                    child:CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
                     child: Image.asset(
-                        "imagem/ativo5.png", width: 100, height: 100
+                        "imagem/ativo5.png", width: 100, height: 100,
+                      ),
                     ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Text("xChange",textAlign:TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lightGreenAccent
+                    ),)
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
