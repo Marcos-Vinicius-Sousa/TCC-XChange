@@ -99,25 +99,7 @@ class _MenuLateralState extends State<MenuLateral> {
                 meusAnuncios();
               },
             ),
-            ListTile(
-              leading: Icon(Icons.search),
-              title: Text("Buscar"),
-              subtitle: Text("produtos ou serviços"),
-              trailing: Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                buscar();
-              },
-            ),
-
-            ListTile(
-              leading: Icon(Icons.timeline),
-              title: Text("Avaliações"),
-              subtitle: Text("suas avaliações"),
-              trailing: Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                avaliar();
-              },
-            ),
+            
             ListTile(
               leading: Icon(Icons.build),
               title: Text("Sobre"),

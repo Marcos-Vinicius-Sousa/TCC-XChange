@@ -30,9 +30,9 @@ dependencies:
   firebase_core: ^0.5.0
   firebase_storage: ^4.0.0
   cloud_firestore: ^0.14.0+2
-  image_picker: ^0.6.7+22
-  brasil_fields: ^0.0.9
-  validadores: ^1.0.2
+    image_picker: ^0.6.7+22
+    brasil_fields: ^0.0.9
+    validadores: ^1.0.2
   carousel_pro: ^1.0.0
   url_launcher: ^5.4.7
 

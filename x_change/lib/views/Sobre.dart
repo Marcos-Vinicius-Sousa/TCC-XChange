@@ -42,7 +42,7 @@ class _SobreState extends State<Sobre> {
                       style: TextStyle(
                         fontSize: 25
                       ),),
-                )
+                ) 
               ],
             ),
           ),

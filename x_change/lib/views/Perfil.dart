@@ -1,6 +1,9 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:validadores/Validador.dart';
 import 'package:x_change/views/MenuLateral.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:x_change/views/widgets/Inputcustomizado.dart';
 
 class Perfil extends StatefulWidget {
@@ -11,6 +14,7 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
 
   final _formKey = GlobalKey<FormState>();
+  File imagem;
 
   //Controladores
 
@@ -19,6 +23,17 @@ class _PerfilState extends State<Perfil> {
   TextEditingController _controllerSenha = TextEditingController();
   TextEditingController _controllerConfirmacaoSenha = TextEditingController();
   String _mensagemErro = "";
+
+  _selecionarImagemGaleria() async {
+    File imagemSelecionada = (await ImagePicker.pickImage(
+        source: ImageSource.gallery)) as File;
+
+    if (imagemSelecionada != null) {
+      setState(() {
+        imagem = imagemSelecionada;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
