@@ -99,7 +99,7 @@ class _MenuLateralState extends State<MenuLateral> {
                 meusAnuncios();
               },
             ),
-            
+
             ListTile(
               leading: Icon(Icons.build),
               title: Text("Sobre"),

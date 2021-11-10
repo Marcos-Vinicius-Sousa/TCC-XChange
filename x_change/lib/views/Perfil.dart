@@ -1,4 +1,6 @@
-import 'dart:html';
+import 'dart:io';
+import 'dart:ui';
+
 
 import 'package:flutter/material.dart';
 import 'package:validadores/Validador.dart';
@@ -14,7 +16,7 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
 
   final _formKey = GlobalKey<FormState>();
-  File imagem;
+  File imagem = Image.asset('imagem/usuario.png',height: 300, width: 300, fit: BoxFit.cover) as File;
 
   //Controladores
 
@@ -30,7 +32,7 @@ class _PerfilState extends State<Perfil> {
 
     if (imagemSelecionada != null) {
       setState(() {
-        imagem = imagemSelecionada;
+        this.imagem = imagemSelecionada;
       });
     }
   }
@@ -58,12 +60,19 @@ class _PerfilState extends State<Perfil> {
                   Padding(padding: EdgeInsets.fromLTRB(130, 20, 130, 20),
                   child:CircleAvatar(
                     radius: 50,
-                    child: ClipOval(child: Image.asset('imagem/usuario.png', height: 300, width: 300, fit: BoxFit.cover,),),
+                    child: ClipOval(child: Image(image: FileImage(imagem))),
                   )),
                 Padding(padding: EdgeInsets.fromLTRB(200, 100, 100, 20),
-                    child:Positioned(bottom: 1, right: 1 ,child: Container(
-                      height: 40, width: 40,
-                      child: Icon(Icons.add_a_photo, color: Colors.white,),
+                    child:Positioned(bottom: 1, right: 1 ,
+                        child: Container(
+                          height: 40, width: 40,
+                      child: IconButton(
+                        icon: new Icon(Icons.add_a_photo),
+                        color: Colors.white,
+                        onPressed: (){
+                          _selecionarImagemGaleria();
+                        },
+                      ),
                       decoration: BoxDecoration(
                           color: Colors.deepOrange,
                           borderRadius: BorderRadius.all(Radius.circular(20))
@@ -125,12 +134,12 @@ class _PerfilState extends State<Perfil> {
                       padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                       child: TextField(
                         obscureText: true,
-                        controller: _controllerSenha,
+                        controller: _controllerConfirmacaoSenha,
                         keyboardType: TextInputType.text,
                         style: TextStyle(fontSize: 20),
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(50, 16, 50, 16),
-                            hintText: "Senha",
+                            hintText: "Confirme a Senha",
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(

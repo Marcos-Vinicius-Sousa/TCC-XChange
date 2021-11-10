@@ -7,11 +7,13 @@ class ItemAnuncio extends StatelessWidget {
   Anuncio anuncio;
   VoidCallback onTapIem;
   VoidCallback onPressRemover;
+  VoidCallback onPressAlterar;
 
   ItemAnuncio({
     @required this.anuncio,
     this.onTapIem,
-    this.onPressRemover
+    this.onPressRemover,
+    this.onPressAlterar
 
   });
 
@@ -36,7 +38,7 @@ class ItemAnuncio extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: EdgeInsets.fromLTRB(10, 8, 0, 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -54,16 +56,30 @@ class ItemAnuncio extends StatelessWidget {
               ),
               if(this.onPressRemover != null)Expanded(
                 flex: 1,
-                child: FlatButton(
-                  color: Colors.red,
-                  padding: EdgeInsets.all(10),
-                  onPressed: this.onPressRemover,
-                  child: Icon(Icons.delete, color: Colors.white),
-                ),
-              )
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(1, 10, 10, 10),
+                  child: FlatButton(
+                    color: Colors.green,
+                    padding: EdgeInsets.all(5),
+                    onPressed: this.onPressAlterar,
+                    child: Icon(Icons.edit, color: Colors.white),
+                  ),
+                )
 
+              ),
+              if(this.onPressRemover != null)Expanded(
+                flex: 1,
+                child:Padding(
+                  padding: EdgeInsets.fromLTRB(0, 8, 10, 8),
+                    child: FlatButton(
+                      color: Colors.red,
+                      padding: EdgeInsets.all(5),
+                      onPressed: this.onPressRemover,
+                      child: Icon(Icons.delete, color: Colors.white),
+                    )
+                )
 
-            ],
+              )],
           ),
         ),
       ),
