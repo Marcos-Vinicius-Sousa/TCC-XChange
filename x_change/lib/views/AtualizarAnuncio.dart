@@ -34,6 +34,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
   List<DropdownMenuItem<String>> _listaItensCidades = List();
   List<DropdownMenuItem<String>> _listaItensCategorias = List();
   Anuncio _anuncio;
+  
   BuildContext _dialogContext;
 
 
@@ -83,11 +84,11 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
         .document(idUsuarioLogado)
         .collection("anuncios")
         .document(_anuncio.id)
-        .setData(_anuncio.toMap()).then((_) {
+        .update(_anuncio.toMap()).then((_) {
       //salvando anuncio publico
       db.collection("anuncios")
           .doc(_anuncio.id)
-          .set(_anuncio.toMap()).then((_) {
+          .update(_anuncio.toMap()).then((_) {
         //Navigator.pop(_dialogContext);
         Navigator.pushReplacementNamed(context, "/meus-anuncios");
       });
