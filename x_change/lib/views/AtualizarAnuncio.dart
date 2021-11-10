@@ -34,7 +34,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
   List<DropdownMenuItem<String>> _listaItensCidades = List();
   List<DropdownMenuItem<String>> _listaItensCategorias = List();
   Anuncio _anuncio;
-  
+
   BuildContext _dialogContext;
 
 

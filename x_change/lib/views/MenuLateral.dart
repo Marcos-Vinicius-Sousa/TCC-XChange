@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:x_change/views/Avaliacao.dart';
-import 'package:x_change/views/Buscar.dart';
-import 'package:x_change/views/MeusAnuncios.dart';
-import 'package:x_change/views/PedidosTrocas.dart';
-import 'package:x_change/views/Perfil.dart';
-import 'package:x_change/views/Planos.dart';
-import 'package:x_change/views/Sobre.dart';
 
+
+import 'package:x_change/views/MeusAnuncios.dart';
+import 'package:x_change/views/Perfil.dart';
+import 'package:x_change/views/Sobre.dart';
 import 'Anuncios.dart';
 
 class MenuLateral extends StatefulWidget {
@@ -18,11 +15,6 @@ class MenuLateral extends StatefulWidget {
 
 class _MenuLateralState extends State<MenuLateral> {
 
-  void avaliar() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Avaliacao()));
-  }
 
   void editarPerfil() {
     Navigator.pushReplacement(
@@ -30,17 +22,6 @@ class _MenuLateralState extends State<MenuLateral> {
         MaterialPageRoute(builder: (context) => Perfil()));
   }
 
-  void trocar() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PedidosTrocas()));
-  }
-
-  void buscar() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Buscar()));
-  }
 
   void sobre() {
     Navigator.pushReplacement(
