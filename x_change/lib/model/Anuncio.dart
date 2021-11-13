@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Anuncio {
+
   String _id;
   String _cidade;
   String _categoria;

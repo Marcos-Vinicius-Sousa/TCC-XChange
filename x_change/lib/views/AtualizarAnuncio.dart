@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +34,21 @@ class AtualizarAnuncio extends StatefulWidget {
 class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
 
   final _formKey = GlobalKey<FormState>();
-  List<File> _listaImagens = List();
+  List<String> _listaImagens = List();
+  File _imagem;
   List<DropdownMenuItem<String>> _listaItensCidades = List();
   List<DropdownMenuItem<String>> _listaItensCategorias = List();
   Anuncio _anuncio;
-
   BuildContext _dialogContext;
+  String _UrlRecuperada;
+  bool img = false;
+
+  TextEditingController _controllerTitulo = TextEditingController();
+  TextEditingController _controllerPreco = TextEditingController();
+  TextEditingController _controllerTelefone = TextEditingController();
+  TextEditingController _controllerDescricao = TextEditingController();
+
+  String _usuarioLogado;
 
 
   _selecionarImagemGaleria() async {
@@ -44,10 +57,14 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
 
     if (imagemSelecionada != null) {
       setState(() {
-        _listaImagens.add(imagemSelecionada);
+        img = true;
+        _imagem = imagemSelecionada;
+        _uploadImagens();
       });
     }
   }
+
+
 
   _abriDialog(BuildContext context) {
     showDialog(
@@ -68,38 +85,55 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
     );
   }
 
-  _salvarAnuncio() async {
+  _salvarAnuncio(bool imgs) async {
     _abriDialog(_dialogContext);
 
     //Upload das imagens no Storage
-    await _uploadImagens();
-    print("Lista imagens: ${_anuncio.fotos.toString()}");
-
-    //Salvar anuncio no FireStore
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User usuarioLogado = await auth.currentUser;
-    String idUsuarioLogado = usuarioLogado.uid;
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    db.collection("meeus_anuncios")
-        .document(idUsuarioLogado)
-        .collection("anuncios")
-        .document(_anuncio.id)
-        .update(_anuncio.toMap()).then((_) {
-      //salvando anuncio publico
-      db.collection("anuncios")
+    if(imgs == true){
+      await _uploadImagens();
+      //Salvar anuncio no FireStore
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User usuarioLogado = await auth.currentUser;
+      String idUsuarioLogado = usuarioLogado.uid;
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      db.collection("meeus_anuncios")
+          .doc(idUsuarioLogado)
+          .collection("anuncios")
           .doc(_anuncio.id)
           .update(_anuncio.toMap()).then((_) {
-        //Navigator.pop(_dialogContext);
-        Navigator.pushReplacementNamed(context, "/meus-anuncios");
+        //salvando anuncio publico
+        db.collection("anuncios")
+            .doc(_anuncio.id)
+            .update(_anuncio.toMap()).then((_) {
+          //Navigator.pop(_dialogContext);
+          Navigator.pushReplacementNamed(context, "/meus-anuncios");
+        });
       });
-    });
+    }else{
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User usuarioLogado = await auth.currentUser;
+      String idUsuarioLogado = usuarioLogado.uid;
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      db.collection("meeus_anuncios")
+          .doc(idUsuarioLogado)
+          .collection("anuncios")
+          .doc(_anuncio.id)
+          .update(_anuncio.toMap()).then((_) {
+        //salvando anuncio publico
+        db.collection("anuncios")
+            .doc(_anuncio.id)
+            .update(_anuncio.toMap()).then((_) {
+          //Navigator.pop(_dialogContext);
+          Navigator.pushReplacementNamed(context, "/meus-anuncios");
+        });
+      });
+    }
   }
+
 
   Future _uploadImagens() async {
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
-
-    for (var imagem in _listaImagens) {
       String nomeImagem = DateTime
           .now()
           .millisecondsSinceEpoch
@@ -109,24 +143,77 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
           .child(_anuncio.id)
           .child(nomeImagem);
 
-      StorageUploadTask uploadTask = arquivo.putFile(imagem);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      StorageUploadTask task = arquivo.putFile(_imagem);
+      //StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      //String url = await taskSnapshot.ref.getDownloadURL();
+      //_anuncio.fotos.add(url);
+    //Recuperando Url da Imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot)  {
+      _recuperarUrlImagem(snapshot);
+    });
 
-      String url = await taskSnapshot.ref.getDownloadURL();
-      _anuncio.fotos.add(url);
-    }
   }
 
-  @override
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot)async {
+
+    String url = await snapshot.ref.getDownloadURL();
+    _atualizarUrlImagem(url);
+    setState(() {
+      _UrlRecuperada = url;
+    });
+  }
+
+  _atualizarUrlImagem(String url)async {
+    Map<String, dynamic> dadosAtualizar = {
+      "fotos": [url]
+    };
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db.collection("anuncios")
+        .doc(_usuarioLogado)
+        .update(dadosAtualizar).then((_){
+      db.collection("meeus_anuncios")
+          .doc(_usuarioLogado)
+          .collection("anuncios")
+          .doc(_anuncio.id)
+          .update(dadosAtualizar);
+    });
+  }
+
+    @override
   void initState() {
     super.initState();
     _carregarItensDropdown();
+    _recuperarUsuario();
     _anuncio = widget.anuncio;
+
   }
 
   _carregarItensDropdown() {
     _listaItensCategorias = Config.getCategorias();
     _listaItensCidades = Config.getCidades();
+  }
+
+  _recuperarUsuario()async{
+
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User usuarioLogado = await auth.currentUser;
+    _usuarioLogado = usuarioLogado.uid;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentSnapshot snapshot = await db.collection("anuncios")
+        .doc(_usuarioLogado)
+        .get();
+
+    Map<String, dynamic> dados = snapshot.data();
+    List<String> listaUrlImagens = _anuncio.fotos;
+    return listaUrlImagens.map((url){
+      String foto = url.toString();
+      print(foto);
+      setState(() {
+        _listaImagens.add(foto);
+        //print(_listaImagens);
+        });
+      }).toString();
   }
 
 
@@ -150,8 +237,8 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                 //area de imagens
                 FormField<List>(
                   initialValue: _listaImagens,
-                  validator: (imagens) {
-                    if (imagens.length == 0) {
+                  validator: (list) {
+                    if (_listaImagens.length == 0) {
                       return "Necessário selecionar uma imagem.";
                     }
                     return null;
@@ -208,7 +295,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                                                   mainAxisSize: MainAxisSize
                                                       .min,
                                                   children: <Widget>[
-                                                    Image.file(
+                                                    Image.network(
                                                         _listaImagens[indice]),
                                                     FlatButton(
                                                       child: Text("Excluir"),
@@ -229,7 +316,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                                     },
                                     child: CircleAvatar(
                                       radius: 50,
-                                      backgroundImage: FileImage(
+                                      backgroundImage: NetworkImage(
                                           _listaImagens[indice]),
                                       child: Container(
                                         color: Color.fromRGBO(
@@ -264,6 +351,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                     child: Padding(
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
+                        value:  _anuncio.cidade,
                         hint: Text("Cidades",
                             style: TextStyle(color: Colors.blue)),
                         onSaved: (cidade) {
@@ -289,6 +377,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                     child: Padding(
                       padding: EdgeInsets.all(8),
                       child: DropdownButtonFormField(
+                        value: _anuncio.categoria,
                         hint: Text("Categoria",
                             style: TextStyle(color: Colors.blue)),
                         onSaved: (categoria) {
@@ -315,6 +404,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 15, top: 15),
                   child: Inputcustomizado(
+                    initialValue: _anuncio.titulo,
                     hint: "Título",
                     onSaved: (titulo) {
                       _anuncio.titulo = titulo;
@@ -329,6 +419,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 15),
                   child: Inputcustomizado(
+                    initialValue: _anuncio.preco,
                     hint: "Preço",
                     onSaved: (preco) {
                       _anuncio.preco = preco;
@@ -348,9 +439,10 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 15),
                   child: Inputcustomizado(
+                    initialValue: _anuncio.telefone,
                     hint: "Telefone",
                     onSaved: (telefone) {
-                      _anuncio.telefone = "${_anuncio.telefone}";
+                      _anuncio.telefone = telefone;
                     },
                     type: TextInputType.phone,
                     inputFormatters: [
@@ -369,6 +461,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                   child: Inputcustomizado(
                     hint: "Descrição (300 caracteres)",
                     maxLines: null,
+                    initialValue: _anuncio.descricao,
                     onSaved: (descricao) {
                       _anuncio.descricao = descricao;
                     },
@@ -391,7 +484,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                         _dialogContext = context;
 
                         //salvar Anuncio
-                        _salvarAnuncio();
+                        _salvarAnuncio(img);
                       }
                     }
                 )

@@ -31,7 +31,8 @@ class Config {
     List<DropdownMenuItem<String>> itensDropCidades = [];
 
     itensDropCidades.add(
-        DropdownMenuItem(child: Text(
+        DropdownMenuItem(
+          child: Text(
             "Cidades", style: TextStyle(
             color: Colors.indigo
         )

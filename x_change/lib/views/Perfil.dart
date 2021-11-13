@@ -1,12 +1,14 @@
 import 'dart:io';
-import 'dart:ui';
 
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:validadores/Validador.dart';
 import 'package:x_change/views/MenuLateral.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:x_change/views/widgets/Inputcustomizado.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'Anuncios.dart';
+
 
 class Perfil extends StatefulWidget {
   @override
@@ -16,25 +18,143 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
 
   final _formKey = GlobalKey<FormState>();
-  File imagem = Image.asset('imagem/usuario.png',height: 300, width: 300, fit: BoxFit.cover) as File;
+  //File imagem = Image.asset('imagem/usuario.png',height: 300, width: 300, fit: BoxFit.cover) as File;
 
   //Controladores
 
   TextEditingController _controllerNome = TextEditingController();
   TextEditingController _controllerEmail = TextEditingController();
-  TextEditingController _controllerSenha = TextEditingController();
-  TextEditingController _controllerConfirmacaoSenha = TextEditingController();
+
+
   String _mensagemErro = "";
+  File _imagem;
 
-  _selecionarImagemGaleria() async {
-    File imagemSelecionada = (await ImagePicker.pickImage(
-        source: ImageSource.gallery)) as File;
+  String _UrlRecuperada;
+  String _usuarioLogado;
+  bool _subindoImagem = false;
 
-    if (imagemSelecionada != null) {
-      setState(() {
-        this.imagem = imagemSelecionada;
-      });
+
+
+  Future _recuperarImagem(String origemImagem) async{
+
+    File imagemSelecionada;
+
+    switch(origemImagem){
+      case "camera":
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria":
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
     }
+
+    setState(() {
+      _imagem = imagemSelecionada;
+      if(_imagem != null){
+        _subindoImagem = true;
+        _uploadImagem();
+      }
+    });
+  }
+
+  Future _uploadImagem()async{
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+    .child("perfil")
+    .child(_usuarioLogado +".jpg");
+
+    StorageUploadTask task =  arquivo.putFile(_imagem);
+    
+    task.events.listen((StorageTaskEvent storageTaskEvent) {
+      if(storageTaskEvent.type == StorageTaskEventType.progress){
+        setState(() {
+          _subindoImagem = true;
+        });
+      }else if(storageTaskEvent.type == StorageTaskEventType.success){
+        setState(() {
+          _subindoImagem = false;
+        });
+      }
+    });
+
+    //Recuperando Url da Imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot)  {
+      _recuperarUrlImagem(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot)async {
+
+    String url = await snapshot.ref.getDownloadURL();
+    _atualizarUrlImagem(url);
+    setState(() {
+      _UrlRecuperada = url;
+    });
+  }
+  _atualizarUrlImagem(String url)async {
+
+    Map<String, dynamic> dadosAtualizar = {
+      "urlImagem": url
+    };
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db.collection("usuarios")
+        .doc(_usuarioLogado)
+        .update(dadosAtualizar);
+
+  }
+
+  _atualizar()async {
+
+    String nome = _controllerNome.text;
+    String email = _controllerEmail.text;
+    Map<String, dynamic> dadosAtualizar = {
+      "nome": nome,
+      "email": email,
+    };
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    db.collection("usuarios")
+      .doc(_usuarioLogado)
+      .update(dadosAtualizar);
+
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Anuncios()
+        )
+    );
+  }
+
+  _recuperarUsuario()async{
+
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User usuarioLogado = await auth.currentUser;
+    _usuarioLogado = usuarioLogado.uid;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentSnapshot snapshot = await db.collection("usuarios")
+      .doc(_usuarioLogado)
+      .get();
+
+    Map<String, dynamic> dados = snapshot.data();
+    _controllerNome.text = dados["nome"];
+    _controllerEmail.text = dados["email"];
+
+    if(dados["urlImagem"] != null){
+      setState(() {
+        _UrlRecuperada = dados["urlImagem"];
+      });
+
+    }
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _recuperarUsuario();
+
   }
 
   @override
@@ -47,42 +167,59 @@ class _PerfilState extends State<Perfil> {
         ),
         drawer: MenuLateral(),
         body: Container(
-          decoration: BoxDecoration(color: Colors.grey),
+          decoration: BoxDecoration(color: Colors.white70),
           padding: EdgeInsets.all(16),
           child: Center(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                Stack(
+                  //carregando
+                     _subindoImagem
+                          ? CircularProgressIndicator()
+                          : Container(),
+                    CircleAvatar(
+                      radius: 100,
+                      backgroundImage:
+                      _UrlRecuperada != null
+                      ?NetworkImage(_UrlRecuperada)
+                      : null,
+                      backgroundColor: Colors.grey,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: RaisedButton(
+                            color: Colors.indigo,
+                              onPressed: (){
+                                _recuperarImagem("camera");
+                              },
+                              child: Text("Câmera",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white
+                                ),
+                              ),
+                            ),
+                          ),
+                        Padding(padding: EdgeInsets.all(10),
+                            child:RaisedButton(
+                              color: Colors.indigo,
+                              onPressed: (){
+                                _recuperarImagem("galeria");
+                              },
+                              child: Text("Galeria",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white
+                                ),),
 
-                children: <Widget>[
-                  Padding(padding: EdgeInsets.fromLTRB(130, 20, 130, 20),
-                  child:CircleAvatar(
-                    radius: 50,
-                    child: ClipOval(child: Image(image: FileImage(imagem))),
-                  )),
-                Padding(padding: EdgeInsets.fromLTRB(200, 100, 100, 20),
-                    child:Positioned(bottom: 1, right: 1 ,
-                        child: Container(
-                          height: 40, width: 40,
-                      child: IconButton(
-                        icon: new Icon(Icons.add_a_photo),
-                        color: Colors.white,
-                        onPressed: (){
-                          _selecionarImagemGaleria();
-                        },
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.deepOrange,
-                          borderRadius: BorderRadius.all(Radius.circular(20))
-                      ),
-                    ))
-                ),
-
-
-                ],
-              ),
+                            ),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                       child: TextField(
@@ -114,43 +251,12 @@ class _PerfilState extends State<Perfil> {
                                 borderRadius: BorderRadius.circular(10))),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                      child: TextField(
-                        obscureText: true,
-                        controller: _controllerSenha,
-                        keyboardType: TextInputType.text,
-                        style: TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.fromLTRB(50, 16, 50, 16),
-                            hintText: "Senha",
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                      child: TextField(
-                        obscureText: true,
-                        controller: _controllerConfirmacaoSenha,
-                        keyboardType: TextInputType.text,
-                        style: TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.fromLTRB(50, 16, 50, 16),
-                            hintText: "Confirme a Senha",
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                      ),
-                    ),
+
                     Padding(
                       padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                       child: RaisedButton(
                         child: Text(
-                          "Cadastrar",
+                          "Salvar",
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                         color: Colors.deepOrange,
@@ -158,7 +264,7 @@ class _PerfilState extends State<Perfil> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         onPressed: () {
-
+                          _atualizar();
                         },
                       ),
                     ),

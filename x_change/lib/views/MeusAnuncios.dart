@@ -116,7 +116,7 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                         onPressAlterar: (){
                           Navigator.pushNamed(context, "/editar-anuncio",
                           arguments: anuncio);
-                        }
+                        } 
                         ,
                         onPressRemover: () {
                           showDialog(

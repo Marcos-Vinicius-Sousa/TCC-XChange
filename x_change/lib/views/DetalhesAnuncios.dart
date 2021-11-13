@@ -1,4 +1,5 @@
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +18,7 @@ class DetalhesAnuncios extends StatefulWidget {
 class _DetalhesAnunciosState extends State<DetalhesAnuncios> {
 
   Anuncio _anuncio;
+
 
   List<Widget> _getListaImagens(){
     List<String> listaUrlImagens = _anuncio.fotos;
