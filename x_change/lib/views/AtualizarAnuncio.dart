@@ -42,6 +42,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
   BuildContext _dialogContext;
   String _UrlRecuperada;
   bool img = false;
+  bool _subindoImagem = false;
 
   TextEditingController _controllerTitulo = TextEditingController();
   TextEditingController _controllerPreco = TextEditingController();
@@ -60,6 +61,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
         img = true;
         _imagem = imagemSelecionada;
         _uploadImagens();
+
       });
     }
   }
@@ -87,6 +89,8 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
 
   _salvarAnuncio(bool imgs) async {
     _abriDialog(_dialogContext);
+
+    _anuncio.fotos = _listaImagens;
 
     //Upload das imagens no Storage
     if(imgs == true){
@@ -134,32 +138,42 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
   Future _uploadImagens() async {
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
-      String nomeImagem = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
+      String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
       StorageReference arquivo = pastaRaiz
           .child("meus_anuncios")
           .child(_anuncio.id)
           .child(nomeImagem);
 
       StorageUploadTask task = arquivo.putFile(_imagem);
-      //StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-      //String url = await taskSnapshot.ref.getDownloadURL();
-      //_anuncio.fotos.add(url);
-    //Recuperando Url da Imagem
+    task.events.listen((StorageTaskEvent storageTaskEvent) {
+      if(storageTaskEvent.type == StorageTaskEventType.progress){
+        setState(() {
+          _subindoImagem = true;
+        });
+      }else if(storageTaskEvent.type == StorageTaskEventType.success){
+        setState(() {
+          _subindoImagem = false;
+        });
+      }
+    });
+
     task.onComplete.then((StorageTaskSnapshot snapshot)  {
       _recuperarUrlImagem(snapshot);
+
     });
 
   }
 
+
   Future _recuperarUrlImagem(StorageTaskSnapshot snapshot)async {
 
     String url = await snapshot.ref.getDownloadURL();
+
     _atualizarUrlImagem(url);
     setState(() {
       _UrlRecuperada = url;
+      _anuncio.fotos.add(_UrlRecuperada);
+      _listaImagens.add(_UrlRecuperada);
     });
   }
 
@@ -208,10 +222,9 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
     List<String> listaUrlImagens = _anuncio.fotos;
     return listaUrlImagens.map((url){
       String foto = url.toString();
-      print(foto);
       setState(() {
         _listaImagens.add(foto);
-        //print(_listaImagens);
+
         });
       }).toString();
   }
@@ -302,8 +315,7 @@ class _AtualizarAnuncioState extends State<AtualizarAnuncio> {
                                                       textColor: Colors.red,
                                                       onPressed: () {
                                                         setState(() {
-                                                          _listaImagens
-                                                              .removeAt(indice);
+                                                          _listaImagens.removeAt(indice);
                                                           Navigator.of(context)
                                                               .pop();
                                                         });
