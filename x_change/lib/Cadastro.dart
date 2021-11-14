@@ -106,7 +106,7 @@ class _CadastroState extends State<Cadastro> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 32),
                     child: Image.asset(
-                        "imagem/usuario.png", width: 200, height: 150),
+                        "imagem/usuario.png", width: 100, height: 100),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
@@ -121,7 +121,7 @@ class _CadastroState extends State<Cadastro> {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32))),
+                              borderRadius: BorderRadius.circular(10))),
                     ),
                   ),
                   Padding(
@@ -136,7 +136,7 @@ class _CadastroState extends State<Cadastro> {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32))),
+                              borderRadius: BorderRadius.circular(10))),
                     ),
                   ),
                   Padding(
@@ -152,7 +152,7 @@ class _CadastroState extends State<Cadastro> {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32))),
+                              borderRadius: BorderRadius.circular(10))),
                     ),
                   ),
                   TextField(
@@ -166,7 +166,7 @@ class _CadastroState extends State<Cadastro> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32))),
+                            borderRadius: BorderRadius.circular(10))),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 16, bottom: 10),
@@ -178,7 +178,7 @@ class _CadastroState extends State<Cadastro> {
                       color: Colors.deepOrange,
                       padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32)),
+                          borderRadius: BorderRadius.circular(10)),
                       onPressed: () {
                         _validarCampos();
                       },
