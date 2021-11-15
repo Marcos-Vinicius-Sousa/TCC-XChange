@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
                     ),)
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: Inputcustomizado(
                       controller: _controllerEmail,
                       hint: "E-mail",
@@ -126,13 +126,16 @@ class _LoginState extends State<Login> {
                     ),
 
                   ),
-                  InputcustomizadoSenha(
-                    controller: _controllerSenha,
-                    hint: "Senha",
-                    obscure: true,
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(5,8,10,10),
+                      child:InputcustomizadoSenha(
+                        controller: _controllerSenha,
+                        hint: "Senha",
+                        obscure: true,
+                      )
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 10),
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: BotaoCustomizado(
                       texto: "Entrar",
                       onPressed: () {
@@ -142,30 +145,13 @@ class _LoginState extends State<Login> {
                     ),
                   ),
 
-                  /*Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 10),
-                    child: RaisedButton(
-                      child: Text(
-                        "Entrar",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      color: Colors.deepOrange,
-                      padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32)
-                      ),
-                      onPressed: (){
-
-                        _validarCampos();
-                      },
-                    ),
-                  ),*/
                   Center(
                     child: GestureDetector(
                       child: Text(
                         "Não tem conta? Cadastre-se!",
                         style: TextStyle(
-                            color: Colors.white
+                            color: Colors.white,
+                            fontSize: 18
                         ),
                       ),
                       onTap: () {

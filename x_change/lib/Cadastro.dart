@@ -109,7 +109,7 @@ class _CadastroState extends State<Cadastro> {
                         "imagem/usuario.png", width: 100, height: 100),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: TextField(
                       controller: _controllerNome,
                       autofocus: true,
@@ -125,7 +125,7 @@ class _CadastroState extends State<Cadastro> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: TextField(
                       controller: _controllerEmail,
                       keyboardType: TextInputType.emailAddress,
@@ -140,7 +140,7 @@ class _CadastroState extends State<Cadastro> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: TextField(
                       obscureText: true,
                       controller: _controllerSenha,
@@ -155,21 +155,25 @@ class _CadastroState extends State<Cadastro> {
                               borderRadius: BorderRadius.circular(10))),
                     ),
                   ),
-                  TextField(
-                    obscureText: true,
-                    controller: _controllerConfirmacaoSenha,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 20),
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Confirme a Senha",
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
                   Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 10),
+                      padding: EdgeInsets.fromLTRB(5,8,10,10),
+                      child: TextField(
+                        obscureText: true,
+                        controller: _controllerConfirmacaoSenha,
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(fontSize: 20),
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                            hintText: "Confirme a Senha",
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                      )
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5,8,10,10),
                     child: RaisedButton(
                       child: Text(
                         "Cadastrar",
