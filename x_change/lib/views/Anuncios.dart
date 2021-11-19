@@ -175,9 +175,9 @@ class _AnunciosState extends State<Anuncios> {
                 case ConnectionState.done:
                   QuerySnapshot querySnapshot = snapshot.data;
                   if (querySnapshot.docs.length == 0) {
-                    return Container(
-                      padding: EdgeInsets.all(25),
-                      child: Text("Nenhum anúncio! ",
+                    return Center(
+                      //padding: EdgeInsets.all(25),
+                      child: Text("Nenhum anúncio foi encontrado! ",
                         style: TextStyle(
                             fontSize: 20,
                             // ignore: missing_return, missing_return
@@ -185,34 +185,33 @@ class _AnunciosState extends State<Anuncios> {
                         ),
                       ),
                     );
-                  }
+                  } else {
+                    return Expanded(
+                      child: ListView.builder(
+                          itemCount: querySnapshot.docs.length,
+                          itemBuilder: (_, indice) {
+                            List<DocumentSnapshot> anuncios = querySnapshot
+                                .documents
+                                .toList();
+                            DocumentSnapshot documentSnapshot = anuncios[indice];
+                            Anuncio anuncio = Anuncio.fromDocumentSnapshot(
+                                documentSnapshot);
 
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: querySnapshot.docs.length,
-                        itemBuilder: (_,indice){
-                          List<DocumentSnapshot> anuncios = querySnapshot.documents
-                              .toList();
-                          DocumentSnapshot documentSnapshot = anuncios[indice];
-                          Anuncio anuncio = Anuncio.fromDocumentSnapshot(
-                              documentSnapshot);
-
-                          return ItemAnuncio(
-                              anuncio: anuncio,
-                              onTapIem: (){
-                                Navigator.pushNamed(
-                                    context,
-                                    "/detalhes-anuncio",
-                                    arguments: anuncio
-                                );
-                            }
-                          );
+                            return ItemAnuncio(
+                                anuncio: anuncio,
+                                onTapIem: () {
+                                  Navigator.pushNamed(
+                                      context,
+                                      "/detalhes-anuncio",
+                                      arguments: anuncio
+                                  );
+                                }
+                            );
                           }
-                        ),
-                  );
-              }
-
-              return Container();
+                      ),
+                    );
+                  }
+              } return Container();
             },
           )
         ],

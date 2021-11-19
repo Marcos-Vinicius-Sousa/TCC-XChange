@@ -101,6 +101,18 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                   return Text("Erro ao carregar dados.");
 
                 QuerySnapshot querySnapshot = snapshot.data;
+                if (querySnapshot.docs.length == 0) {
+                  return Center(
+                    //padding: EdgeInsets.all(25),
+                    child: Text("Nenhum anúncio foi criado ainda! ",
+                      style: TextStyle(
+                          fontSize: 20,
+                          // ignore: missing_return, missing_return
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  );
+                }
 
                 return ListView.builder(
                     itemCount: querySnapshot.documents.length,

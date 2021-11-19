@@ -72,7 +72,7 @@ class _MenuLateralState extends State<MenuLateral> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
+              leading: Icon(Icons.add_business_rounded),
               title: Text("Meus Anuncios"),
               subtitle: Text("Crie seu Anuncio"),
               trailing: Icon(Icons.arrow_forward_ios),
@@ -82,7 +82,7 @@ class _MenuLateralState extends State<MenuLateral> {
             ),
 
             ListTile(
-              leading: Icon(Icons.build),
+              leading: Icon(Icons.admin_panel_settings),
               title: Text("Sobre"),
               subtitle: Text("Conheça xChange"),
               trailing: Icon(Icons.arrow_forward_ios),
@@ -91,7 +91,7 @@ class _MenuLateralState extends State<MenuLateral> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.transit_enterexit),
+              leading: Icon(Icons.exit_to_app_rounded),
               title: Text("Sair"),
               subtitle: Text("Deslogar"),
               trailing: Icon(Icons.arrow_forward_ios),
