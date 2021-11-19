@@ -93,10 +93,10 @@ class _CadastroState extends State<Cadastro> {
     return Scaffold(
       appBar: AppBar(
           title: Text("Cadastro"),
-          backgroundColor: Colors.indigo
+          backgroundColor: Color(0xFF27bd67)
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.indigo),
+        decoration: BoxDecoration(color:Color(0xFF34ff8a)),
         padding: EdgeInsets.all(16),
         child: Center(
             child: SingleChildScrollView(
@@ -179,7 +179,7 @@ class _CadastroState extends State<Cadastro> {
                         "Cadastrar",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                      color: Colors.deepOrange,
+                      color: Color(0xFF),
                       padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),

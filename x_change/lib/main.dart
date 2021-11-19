@@ -12,10 +12,10 @@ void main() async {
   runApp(MaterialApp(
     home: Login(),
     title: "xChange",
-    theme: ThemeData(
-        primaryColor: Colors.indigo,
-        accentColor: Colors.deepOrange
-    ),
+    //theme: ThemeData(
+       // primaryColor: Colors.indigo,
+        //accentColor: Colors.deepOrange
+    //),
     initialRoute: "/",
     onGenerateRoute: RouterGenerator.generateRoute,
     debugShowCheckedModeBanner: false,
