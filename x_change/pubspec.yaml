@@ -36,10 +36,14 @@ dependencies:
   validadores: ^1.0.2
   carousel_pro: ^1.0.0
   url_launcher: ^5.4.7
+  flutter_launcher_icons: ^0.9.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+flutter_icons:
+  android: true
+  image_path: "dev_assest/ativo5.png "
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -60,4 +64,5 @@ flutter:
     - imagem/logo.png
     - imagem/usuario.png
     - imagem/logoxchange.jpg
+    - imagem/logo2xchange.png
     - imagem/ativo5.png
